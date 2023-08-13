@@ -1,4 +1,4 @@
-name: Publish Cfg
+name: Publish Messaging
 on:
   workflow_dispatch:
 
