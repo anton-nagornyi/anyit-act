@@ -42,7 +42,7 @@ export abstract class Message {
       this.messageId = args?.messageId || randomUuid();
     }
 
-    this.requestId = args?.requestId;
+    this.traceId = args?.traceId ?? args?.reason?.traceId;
 
     this.createdAt = this.getDateTimeFromIso(args?.createdAt);
 
@@ -88,7 +88,7 @@ export abstract class Message {
 
   readonly messageId: string;
 
-  readonly requestId?: string;
+  readonly traceId?: string;
 
   readonly createdAt?: DateTime;
 

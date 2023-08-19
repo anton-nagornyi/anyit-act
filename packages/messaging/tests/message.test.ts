@@ -48,13 +48,13 @@ describe('Given the Message class', () => {
       });
     });
 
-    describe('And requestId is provided', () => {
+    describe('And traceId is provided', () => {
       beforeEach(() => {
-        message = new TestMessage({ requestId: 'some-request-id' });
+        message = new TestMessage({ traceId: 'some-trace-id' });
       });
 
-      it('Then it uses the provided requestId', () => {
-        expect(message.requestId).toBe('some-request-id');
+      it('Then it uses the provided traceId', () => {
+        expect(message.traceId).toBe('some-trace-id');
       });
     });
 
@@ -63,7 +63,10 @@ describe('Given the Message class', () => {
 
       beforeEach(() => {
         reasonMessage = new TestMessage({ messageId: 'reason-uuid' });
-        message = new TestMessage({ reason: reasonMessage });
+        message = new TestMessage({
+          reason: reasonMessage,
+          traceId: 'some-trace-id',
+        });
       });
 
       it('Then it sets the reason', () => {
@@ -72,6 +75,10 @@ describe('Given the Message class', () => {
 
       it('Then the reason has the correct messageId', () => {
         expect(message.reason?.messageId).toBe('reason-uuid');
+      });
+
+      it('Then the reason has the correct traceId', () => {
+        expect(message.traceId).toBe('some-trace-id');
       });
     });
 

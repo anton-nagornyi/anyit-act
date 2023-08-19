@@ -13,3 +13,11 @@ export class ErrorMessage extends Message {
 
   readonly error: Error;
 }
+
+export const isErrorMessage = (
+  message?: Message | void,
+): message is ErrorMessage =>
+  Boolean(
+    message &&
+      (message.code === ErrorMessage.code || message instanceof ErrorMessage),
+  );

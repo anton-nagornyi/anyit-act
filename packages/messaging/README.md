@@ -8,7 +8,7 @@ blocks to get started.
 ## Table of Contents
 
 - [Message Base Class](#message-base-class)
-- [Custom Message Type](#custom-message-type)
+- [Additional message types](#additional-message-types)
 - [Decorators](#decorators)
 - [Messages Factory](#messages-factory)
 - [Error Class](#error-class)
@@ -24,7 +24,7 @@ The `Message` class is an abstract class designed to act as the base for all cus
 
 **Public Properties**:
 - `messageId`: A unique identifier for the message.
-- `requestId`: An optional request identifier.
+- `traceId`: An optional trace identifier. Its value will be taken from the `reason` if not directly provided.
 - `createdAt`: Timestamp of message creation.
 - `reason`: An optional reason message.
 - `reasonId`: An optional reason message ID if for some reason providing of the whole message within the `reason` field
@@ -36,7 +36,7 @@ is unwanted.
 - `toJSON()`: Returns a JSON representation of the message.
 - `toString()`: Returns a string representation of the message.
 
-## Custom Message Type
+## Additional Message Types
 
 ### `ErrorMessage`
 
@@ -44,6 +44,47 @@ A custom message type for error-related messages. It extends the base `Message` 
 
 **Public Property**:
 - `error`: Stores the error information.
+
+When using this message, it is advisable to provide a `reason` to detail the context or specifics of the error.
+#### Type Guard:
+
+Use the `isErrorMessage` function to check if a given message instance is of the `ErrorMessage` type.
+
+```typescript
+if (isErrorMessage(someMessage)) {
+    console.log("This is a error message.");
+}
+```
+
+### `SuccessMessage`
+
+This message type indicates a successful operation and extends the base `Message` class. When using this message, it is 
+advisable to provide a `reason` to detail the context or specifics of the success.
+
+#### Type Guard:
+
+Use the `isSuccessMessage` function to check if a given message instance is of the `SuccessMessage` type.
+
+```typescript
+if (isSuccessMessage(someMessage)) {
+    console.log("This is a success message.");
+}
+```
+
+### `ProcessingComplete`
+
+This message type signifies the completion of a processing task and also extends the base `Message` class. Similarly, 
+it's recommended to accompany this message with a `reason` to provide clarity on what processing was completed.
+
+#### Type Guard:
+
+Use the `isProcessingComplete` function to verify if a given message instance is of the `ProcessingComplete` type.
+
+```typescript
+if (isProcessingComplete(someMessage)) {
+    console.log("Processing is complete.");
+}
+```
 
 ## Decorators
 

@@ -8,3 +8,5 @@ export * from './src/decorators/register-message';
 export * from './src/errors/message-deserialize-error';
 export * from './src/messages/error-message';
 export * from './src/messages/message';
+export * from './src/messages/processing-complete';
+export * from './src/messages/success-message';
