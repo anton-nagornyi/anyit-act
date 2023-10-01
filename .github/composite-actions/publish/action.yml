@@ -62,8 +62,8 @@ runs:
         NPM_AUTH_TOKEN: ${{inputs.npm-auth-token}}
       run: |
         echo 'npmAlwaysAuth: true' > .yarnrc.yml
-        echo 'npmAuthToken: "${NPM_AUTH_TOKEN}"' > .yarnrc.yml
-        echo 'npmRegistryServer: "https://registry.npmjs.org/"' > .yarnrc.yml
+        echo 'npmAuthToken: "${NPM_AUTH_TOKEN}"' >> .yarnrc.yml
+        echo 'npmRegistryServer: "https://registry.npmjs.org/"' >> .yarnrc.yml
 
     - name: Build & Publish
       id: run-yarn-publish
