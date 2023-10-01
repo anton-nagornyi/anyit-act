@@ -23,6 +23,7 @@ runs:
       id: install
       shell: bash
       run: |
+        yarn config set -H enableImmutableInstalls false 
         yarn
 
     - name: Lint
