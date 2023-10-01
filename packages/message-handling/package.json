@@ -7,21 +7,20 @@
   "types": "./dist/index.d.ts",
   "license": "MIT",
   "scripts": {
-    "build": "node_modules/.bin/rimraf ./dist && barrelsby -c ./barrelsby.json && rollup -c && rimraf ./dist/@types",
-    "test": "node_modules/.bin/jest",
+    "build": "rimraf ./dist && barrelsby -c ./barrelsby.json && rollup -c && rimraf ./dist/@types",
+    "test": "jest",
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "lint:fix": "eslint \"{src,test}/**/*.ts\" --fix",
     "bump-version": "yarn version --patch --no-git-tag-version"
   },
   "dependencies": {
-    "@anyit/messaging": "*",
+    "@anyit/messaging": "workspace:*",
     "reflect-metadata": "^0.1.13"
   },
-
   "peerDependencies": {
-    "reflect-metadata": "*"
+    "reflect-metadata": "*",
+    "@anyit/messaging": "*"
   },
-
   "files": [
     "dist/*.js",
     "dist/*.d.ts"
