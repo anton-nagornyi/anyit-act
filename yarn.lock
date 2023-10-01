@@ -26,12 +26,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@anyit/actor@workspace:packages/actor"
   dependencies:
-    "@anyit/message-handling": "*"
-    "@anyit/messaging": "*"
+    "@anyit/message-handling": "workspace:*"
+    "@anyit/messaging": "workspace:*"
     "@react-native-community/eslint-config": 3.0.0
     "@rollup/plugin-typescript": ^8.3.2
     "@types/jest": ^29.5.3
-    "@types/ramda": ^0.28.14
     "@typescript-eslint/eslint-plugin": ^6.2.1
     "@typescript-eslint/parser": ^6.2.1
     barrelsby: ^2.3.4
@@ -52,6 +51,10 @@ __metadata:
     rollup-plugin-terser: ^7.0.2
     ts-jest: ^29.1.1
     typescript: 4.9.5
+  peerDependencies:
+    "@anyit/message-handling": "*"
+    "@anyit/messaging": "*"
+    reflect-metadata: "*"
   languageName: unknown
   linkType: soft
 
@@ -230,7 +233,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@anyit/message-handling@workspace:packages/message-handling"
   dependencies:
-    "@anyit/messaging": "*"
+    "@anyit/messaging": "workspace:*"
     "@react-native-community/eslint-config": 3.0.0
     "@rollup/plugin-typescript": ^8.3.2
     "@types/jest": ^29.5.3
@@ -257,6 +260,7 @@ __metadata:
     ts-jest: ^29.1.1
     typescript: 4.9.5
   peerDependencies:
+    "@anyit/messaging": "*"
     reflect-metadata: "*"
   languageName: unknown
   linkType: soft
@@ -269,7 +273,6 @@ __metadata:
     "@rollup/plugin-typescript": ^8.3.2
     "@types/jest": ^29.5.3
     "@types/luxon": ^3.3.1
-    "@types/ramda": ^0.28.14
     "@typescript-eslint/eslint-plugin": ^6.2.1
     "@typescript-eslint/parser": ^6.2.1
     barrelsby: ^2.3.4

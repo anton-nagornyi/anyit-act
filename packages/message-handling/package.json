@@ -18,8 +18,8 @@
     "reflect-metadata": "^0.1.13"
   },
   "peerDependencies": {
-    "reflect-metadata": "*",
-    "@anyit/messaging": "*"
+    "@anyit/messaging": "*",
+    "reflect-metadata": "*"
   },
   "files": [
     "dist/*.js",
