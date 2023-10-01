@@ -24,25 +24,17 @@ runs:
       working-directory: ${{inputs.working-directory}}
       shell: bash
       run: |
-        mv ../../package.json ../../_package.json
-        cp ../../yarn.lock ./yarn.lock
         yarn
         yarn lint
-        mv ../../_package.json ../../package.json
-        rm -rf ./yarn.lock
 
     - name: Test
       id: check-tests
       working-directory: ${{inputs.working-directory}}
       shell: bash
       run: |
-        mv ../../package.json ../../_package.json
-        cp ../../yarn.lock ./yarn.lock
         yarn
         yarn test
-        mv ../../_package.json ../../package.json
-        rm -rf ./yarn.lock
-        
+
     - name: Read Package Name from package.json
       id: package-json-name
       working-directory: ${{inputs.working-directory}}
@@ -75,11 +67,7 @@ runs:
       env:
         NPM_AUTH_TOKEN: ${{inputs.npm-auth-token}}
       run: |
-        mv ../../package.json ../../_package.json
-        cp ../../yarn.lock ./yarn.lock
         yarn
         yarn build
         yarn publish --new-version ${{ env.VERSION }} --access=public
-        mv ../../_package.json ../../package.json
-        rm -rf ./yarn.lock
         yarn info ${{ env.PACKAGE_NAME }}@${{ env.VERSION }}
