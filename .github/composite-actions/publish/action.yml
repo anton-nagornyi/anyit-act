@@ -19,12 +19,17 @@ runs:
       with:
         node-version: 16.15.0
 
+    - name: Install
+      id: install
+      shell: bash
+      run: |
+        yarn
+
     - name: Lint
       id: check-eslint
       working-directory: ${{inputs.working-directory}}
       shell: bash
       run: |
-        yarn
         yarn lint
 
     - name: Test
@@ -32,7 +37,6 @@ runs:
       working-directory: ${{inputs.working-directory}}
       shell: bash
       run: |
-        yarn
         yarn test
 
     - name: Read Package Name from package.json
@@ -67,7 +71,6 @@ runs:
       env:
         NPM_AUTH_TOKEN: ${{inputs.npm-auth-token}}
       run: |
-        yarn
         yarn build
         yarn publish --new-version ${{ env.VERSION }} --access=public
         yarn info ${{ env.PACKAGE_NAME }}@${{ env.VERSION }}
