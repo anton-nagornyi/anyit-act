@@ -74,4 +74,3 @@ runs:
       run: |
         yarn build
         yarn npm publish --access=public
-        yarn info ${{ env.PACKAGE_NAME }}@${{ env.VERSION }}
