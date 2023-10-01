@@ -73,5 +73,5 @@ runs:
         NPM_AUTH_TOKEN: ${{inputs.npm-auth-token}}
       run: |
         yarn build
-        yarn publish --new-version ${{ env.VERSION }} --access=public
+        yarn npm publish --access=public
         yarn info ${{ env.PACKAGE_NAME }}@${{ env.VERSION }}
