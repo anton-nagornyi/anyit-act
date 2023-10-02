@@ -137,6 +137,6 @@ Nestjs service that allows handling messages for the Actor system.
 
 ---
 
-For a deeper understanding of each library and its functionalities, please follow the "More details" link associated with each segment. Contributions and feedback are highly valued. Refer to our [contribution guide](./CONTRIBUTING.md) for collaboration details.
+For a deeper understanding of each library and its functionalities, please follow the "More details" link associated with each segment.
 
 Happy coding!
