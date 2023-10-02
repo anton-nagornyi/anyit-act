@@ -26,7 +26,7 @@ class Test {
 }
 
 describe('Given a MessageHandlingActor', () => {
-  let actor: ActorRef<MessageHandlingActor>;
+  let actor: ActorRef;
   let mockKeyValueActor: any;
   let mockWireActor: any;
 
