@@ -9,8 +9,8 @@
   "scripts": {
     "build": "rimraf ./dist && barrelsby -c ./barrelsby.json && rollup -c && rimraf ./dist/@types",
     "test": "jest",
-    "lint": "eslint \"{src,test}/**/*.ts\"",
-    "lint:fix": "eslint \"{src,test}/**/*.ts\" --fix",
+    "lint": "eslint \"{src,tests}/**/*.ts\"",
+    "lint:fix": "eslint \"{src,tests}/**/*.ts\" --fix",
     "bump-version": "yarn version --patch --no-git-tag-version"
   },
   "dependencies": {
