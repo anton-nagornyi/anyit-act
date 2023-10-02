@@ -37,7 +37,7 @@ export class MessageHandlingActor extends Actor {
 
   private readonly keyPrefix: string;
 
-  protected start(ref: ActorRef) {
+  start(ref: ActorRef) {
     this.wire.tell(
       new Subscribe({
         listener: ref,
