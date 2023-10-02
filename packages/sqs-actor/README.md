@@ -1,93 +1,104 @@
-# Configuration management library
+# sqs-actor
 
-Cfg provides a convenient way to define, load, and access configuration settings in your application.
+This documentation covers two powerful actors, `SqsActor` and `DuplicationCheckerActor`, which provide facilities for 
+processing messages from AWS's SQS and for checking message duplication respectively.
 
-## Features
+## 1. `SqsActor`
 
-- Define configuration settings using TypeScript definitions.
-- Load configuration values from different value providers (e.g., environment variables).
-- Access configuration settings through a typed API.
-- Emit events when configuration settings are changed.
+This is the primary class of the library and encapsulates the logic for polling messages from an SQS queue, processing them, and handling errors.
 
-## Installation
+#### Constructor
 
-To install Cfg, use npm or yarn:
+The `SqsActor` class requires an instance of `SqsActorArgs` to be provided during instantiation. This argument object includes configurations like:
 
-```bash
-npm install --save @anyit/cfg
-```
+- AWS SQS Client arguments
+- The URL of the SQS queue to poll messages from
+- Optional duplication checker actor reference
+- Optional logger instance
 
-```bash
-yarn add @anyit/cfg
-```
+#### Properties:
+
+- `receipts`: Keeps track of received messages and their receipt handles.
+- `logger`: Instance of the logger used.
+- `client`: Instance of the SQS client.
+- `queueUrl`: URL of the SQS queue.
+- `handler`: Reference to the message handler actor.
+- `duplication`: Reference to the duplication checker actor.
+- `isPolling`: Indicates if the actor is currently polling messages.
+- `abortController`: Used to abort the ongoing SQS polling request.
+- `pollingTimeout`: Timeout reference for controlling the polling interval.
+
+#### Key Methods:
+
+- `start(ref: ActorRef)`: Initializes subscriptions and starts message processing.
+- `processingComplete(@Receive message: ProcessingComplete)`: Handles the completion of message processing.
+- `handleSqsMessageSuccess(@Receive message: HandleSqsMessageSuccess)`: Records the receipt handle of successfully processed messages.
+- `handleError(@Receive message: ErrorMessage)`: Handles any errors that occur during processing.
+- `startPolling(@Receive message: StartPolling)`: Begins polling messages from SQS.
+- `stopPolling(@Receive _: StopPolling)`: Stops polling messages from SQS.
+- `poll(abortController: AbortController, options?: ReceiveArgs)`: The main polling loop. Retrieves messages from SQS and forwards them for processing.
+- `decideToPoll()`: Determines if polling should continue or stop.
+
+### 2. Messages:
+
+The library uses various messages for inter-actor communication and operations:
+
+- `ReceiveArgs`: Arguments for the `ReceiveMessageCommand`.
+- `StartPolling`: Message to start the polling process.
+- `HandleSqsMessage`: Message containing an SQS message for processing.
+- `HandleSqsMessageSuccess`: Notification of successful message processing.
+- `StopPolling`: Message to stop the polling process.
+- `ProcessingComplete`: Notification that processing of a message is complete.
+
+### 3. Errors:
+
+- `MessageIsAlreadyReceived`: Error indicating that a message has already been received.
 
 ## Usage
 
-1. Define your configuration:
-```typescript
-export const Config = Cfg.set({
-  server: {
-    host: {
-      default: 'localhost',
-      type: 'string',
-    },
-    port: {
-      default: 3000,
-      type: 'integer',
-    },
-  },
-  database: {
-    url: {
-      default: 'localhost',
-      type: 'string',
-    },
-    port: {
-      default: 5432,
-      type: 'integer',
-    },
-    username: {
-      default: 'user',
-      type: 'string'
-    },
-    password: {
-      default: 'passwd',
-      type: 'string'
-    }
-  }
-});
-```
+To use the `SqsActor` library:
 
-### ConfigDefinition and ConfigItem differences
-When you define your config, as in example above, you are using `ConfigDefinition`. Under the hood, for each `ConfigDefinition`
-the corresponding `ConfigItem`. It has the same fields as the `ConfigDefinition` but it also has a value. You don't need
-to care about this unless you are writing your own value provider.
+1. Initialize the `SqsActor` with the necessary arguments.
+2. Start the actor system.
+3. Send a `StartPolling` message to the actor to begin polling messages from SQS.
+4. Use the `StopPolling` message to stop the polling process when necessary.
 
-### ConfigDefinition:
-* `code`: Optional string value that uniquely identifies config definition and item later. UUID and ULID are the best 
-choices for this. This code can be used in some providers where uniqueness matters.
-* `default`: Value that will be set to the configuration item when it is not provided by any provider.
-* `type`: Value type is used to sanitize value and properly convert it to the required type.
-* `envName`: Optional alias for environment variable where to look for the value. 
-* `tags`: Optional array of tags for additional config item identification.
+## Conclusion
+
+The `SqsActor` library offers a powerful and efficient way to integrate SQS with an actor-based system. It abstracts away many complexities, ensuring that your system remains responsive, resilient, and scalable.
 
 
-2. Access your configuration settings:
 
-```typescript
-console.log(Config.server.host);
-console.log(Config.server.port);
-```
+## 2. `DuplicationCheckerActor`
 
-3. If required, listen to configuration changes:
-```typescript
-Config.on('changed', (configItem, prevValue) => {
-  console.log(`Configuration setting ${configItem.name} changed from ${prevValue} to ${configItem.value}`);
-});
+The `DuplicationCheckerActor` provides functionality for checking if a message has already been received, based on a key-value system.
 
-Config.on('set', (configItem) => {
-  console.log(`Configuration item value was set to ${configItem.value}`);
-});
-```
+### Constructor
 
-`set` event will be emitted everytime `configItem.value` is written.
-`changed` event will be emitted only if the `configItem.value` was really changed.
+The `DuplicationCheckerActor` class requires an instance of `DuplicationCheckerActorArgs` to be provided during instantiation. This argument object includes:
+
+- A reference to the key-value actor used to check duplication
+- Optional prefix string which is prepended to the message ID to generate the unique key
+
+### Properties:
+
+- `keyValue`: Reference to the key-value actor used for checking duplication.
+- `prefix`: A string prefix used in key generation.
+
+### Key Methods:
+
+- `start(ref: ActorRef)`: Initializes the actor and subscribes to relevant messages.
+- `handleSqsMessageSuccess(@Receive message: HandleSqsMessageSuccess)`: Handles a successfully processed SQS message and checks for duplication.
+- `getValueFail(@Receive message: ErrorMessage)`: Handles scenarios where a message value could not be fetched.
+- `getValueSuccess(@Receive message: GetValueSuccess)`: Handles successful fetching of a message value and emits error if the message has already been received.
+
+### Use Cases:
+
+1. Initialize the `DuplicationCheckerActor` with necessary arguments.
+2. Start the actor system.
+3. As SQS messages are successfully processed by the `SqsActor`, they are sent to the `DuplicationCheckerActor` to ensure they haven't been processed before.
+
+### Conclusion
+
+The `DuplicationCheckerActor` ensures that your system processes each SQS message only once, adding an extra layer of reliability to your message processing pipeline.
+
