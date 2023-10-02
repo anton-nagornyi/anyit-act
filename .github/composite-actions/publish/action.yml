@@ -23,6 +23,7 @@ runs:
       id: install
       shell: bash
       run: |
+        yarn config set nodeLinker pnp
         yarn config set -H enableImmutableInstalls false 
         yarn
 
@@ -61,7 +62,6 @@ runs:
       env:
         NPM_AUTH_TOKEN: ${{inputs.npm-auth-token}}
       run: |
-        evho 'nodeLinker: pnp' > .yarnrc.yml
         echo 'npmAlwaysAuth: true' >> .yarnrc.yml
         echo 'npmAuthToken: "${NPM_AUTH_TOKEN}"' >> .yarnrc.yml
         echo 'npmRegistryServer: "https://registry.npmjs.org/"' >> .yarnrc.yml
