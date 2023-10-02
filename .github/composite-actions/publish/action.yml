@@ -61,7 +61,8 @@ runs:
       env:
         NPM_AUTH_TOKEN: ${{inputs.npm-auth-token}}
       run: |
-        echo 'npmAlwaysAuth: true' > .yarnrc.yml
+        evho 'nodeLinker: pnp' > .yarnrc.yml
+        echo 'npmAlwaysAuth: true' >> .yarnrc.yml
         echo 'npmAuthToken: "${NPM_AUTH_TOKEN}"' >> .yarnrc.yml
         echo 'npmRegistryServer: "https://registry.npmjs.org/"' >> .yarnrc.yml
 
