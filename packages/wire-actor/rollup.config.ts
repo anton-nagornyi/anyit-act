@@ -9,7 +9,7 @@ export default [
 			format: 'cjs',
 			sourcemap: true,
 		},
-		external: ['util'],
+		external: ['@anyit/actor', '@anyit/messaging'],
 		plugins: [
 			typescript({
 				tsconfig: 'tsconfig.build.json'
@@ -19,7 +19,7 @@ export default [
 	{
 		input: 'dist/@types/index.d.ts',
 		output: [{ file: 'dist/index.d.ts', format: 'es' }],
-		external: ['@anyit/actor', '@anyit/messaging'],
+		external: [],
 		plugins: [dts()],
 	},
 ];
