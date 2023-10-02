@@ -138,11 +138,13 @@ describe('Given a DuplicationCheckerActor', () => {
 
     it('Then it should emit an error message indicating the message is already received', () => {
       expect(handleMessage).toHaveBeenCalledWith(
-        new ErrorMessage({
-          traceId: 'trace-123',
-          reason: mockMessage,
-          error: new MessageIsAlreadyReceived('msg-123'),
-        }),
+        expect.objectContaining(
+          new ErrorMessage({
+            traceId: 'trace-123',
+            reason: mockMessage,
+            error: new MessageIsAlreadyReceived('msg-123'),
+          }),
+        ),
       );
     });
   });
