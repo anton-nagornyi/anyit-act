@@ -1,8 +1,8 @@
 {
   "name": "@anyit/logger-interface",
   "author": "Anton Nagornyi",
-  "version": "1.0.0",
-  "homepage": "https://github.com/anton-nagornyi/anyit-cfg#readme",
+  "version": "1.0.1",
+  "homepage": "https://github.com/anton-nagornyi/anyit-act#readme",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "license": "MIT",
@@ -19,11 +19,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/anton-nagornyi/anyit-cfg",
-    "directory": "packages/cfg"
+    "url": "https://github.com/anton-nagornyi/anyit-act",
+    "directory": "packages/logger-interface"
   },
   "bugs": {
-    "url": "https://github.com/anton-nagornyi/anyit-cfg/issues"
+    "url": "https://github.com/anton-nagornyi/anyit-act/issues"
   },
   "devDependencies": {
     "@react-native-community/eslint-config": "3.0.0",
