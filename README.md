@@ -129,13 +129,13 @@ Extending the capabilities of the `Actor` class, `WireActor` plays a crucial rol
 
 ---
 
----
-
 ## Nestjs messages service
 
 Nestjs service that allows handling messages for the Actor system.
 
 [More details](./packages/nestjs-messaging/README.md)
+
+---
 
 For a deeper understanding of each library and its functionalities, please follow the "More details" link associated with each segment. Contributions and feedback are highly valued. Refer to our [contribution guide](./CONTRIBUTING.md) for collaboration details.
 
