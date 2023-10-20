@@ -1,7 +1,9 @@
+import { SuccessMessage } from '@anyit/messaging';
+import 'reflect-metadata';
 import { MessageHandlers } from '../message-handlers';
 import { getReceiveHandler } from '../get-receive-handler';
 
-export const Receive = (
+export const ReceiveSuccess = (
   target: any,
   propertyKey: string | symbol,
   parameterIndex: number,
@@ -22,13 +24,14 @@ export const Receive = (
       method,
     },
     message: {
-      code: messageType.code,
-      name: messageType.name,
+      code: SuccessMessage.code,
+      name: SuccessMessage.name,
     },
     handleFunction: getReceiveHandler(
       target,
       propertyKey,
       parameterIndex,
+      SuccessMessage,
       messageType,
     ),
   } as const);

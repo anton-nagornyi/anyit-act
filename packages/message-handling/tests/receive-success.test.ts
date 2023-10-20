@@ -1,12 +1,9 @@
-import { ErrorMessage, Message, RegisterMessage } from '@anyit/messaging';
-import { Receive } from '../src/decorators/receive';
+import { Message, RegisterMessage, SuccessMessage } from '@anyit/messaging';
 import { MessageHandlers } from '../src/message-handlers';
 import { Reason } from '../src/decorators/reason';
-import { ErrorRaised } from '../src/decorators/error-raised';
+import { ReceiveSuccess } from '../src/decorators/receive-success';
 
-class TestError extends Error {}
-
-describe('Given the Receive decorator', () => {
+describe('Given the ReceiveSuccess decorator', () => {
   describe('When used on a class method argument', () => {
     let someMethod: ReturnType<typeof jest.fn>;
 
@@ -14,7 +11,7 @@ describe('Given the Receive decorator', () => {
     class DummyMessage extends Message {}
 
     class TestClass {
-      someMethod(@Receive message: DummyMessage) {
+      someMethod(@ReceiveSuccess message: DummyMessage) {
         someMethod.call(this, this, message);
       }
     }
@@ -26,7 +23,7 @@ describe('Given the Receive decorator', () => {
     it('Then the method should be registered as a message handler based on argument type', () => {
       const handlers = MessageHandlers.getHandlers(
         TestClass,
-        DummyMessage.code,
+        SuccessMessage.code,
       );
       expect(handlers).not.toBeNull();
     });
@@ -36,17 +33,20 @@ describe('Given the Receive decorator', () => {
 
       const handlers = MessageHandlers.getHandlers(
         TestClass,
-        DummyMessage.code,
+        SuccessMessage.code,
       );
 
-      const message = new DummyMessage();
+      const reason = new DummyMessage();
+      const message = new SuccessMessage({
+        reason,
+      });
 
       await handlers![0].handleFunction.call(testInstance, message);
-      expect(someMethod).toBeCalledWith(testInstance, message);
+      expect(someMethod).toBeCalledWith(testInstance, reason);
     });
   });
 
-  describe('When used on a class method argument with a reason and an error', () => {
+  describe('When used on a class method argument with a reason', () => {
     let someMethod: ReturnType<typeof jest.fn>;
 
     @RegisterMessage('dummy-message')
@@ -54,11 +54,10 @@ describe('Given the Receive decorator', () => {
 
     class TestClass {
       someMethod(
-        @Receive message: ErrorMessage,
+        @ReceiveSuccess message: DummyMessage,
         @Reason reason: DummyMessage,
-        @ErrorRaised error: TestError,
       ) {
-        someMethod.call(this, this, message, reason, error);
+        someMethod.call(this, this, message, reason);
       }
     }
 
@@ -69,7 +68,7 @@ describe('Given the Receive decorator', () => {
     it('Then the method should be registered as a message handler based on argument type', () => {
       const handlers = MessageHandlers.getHandlers(
         TestClass,
-        ErrorMessage.code,
+        SuccessMessage.code,
       );
       expect(handlers).not.toBeNull();
     });
@@ -79,23 +78,19 @@ describe('Given the Receive decorator', () => {
 
       const handlers = MessageHandlers.getHandlers(
         TestClass,
-        ErrorMessage.code,
+        SuccessMessage.code,
       );
 
       const reason = new DummyMessage();
-      const error = new TestError();
-      const errorMessage = new ErrorMessage({
+      const reasonSuccess = new DummyMessage({
         reason,
-        error,
+      });
+      const message = new SuccessMessage({
+        reason: reasonSuccess,
       });
 
-      await handlers![0].handleFunction.call(testInstance, errorMessage);
-      expect(someMethod).toBeCalledWith(
-        testInstance,
-        errorMessage,
-        reason,
-        error,
-      );
+      await handlers![0].handleFunction.call(testInstance, message);
+      expect(someMethod).toBeCalledWith(testInstance, reasonSuccess, reason);
     });
   });
 });

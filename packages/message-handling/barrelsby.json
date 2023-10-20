@@ -2,5 +2,5 @@
   "directory": "./",
   "singleQuotes": true,
   "delete": true,
-  "exclude": ["tests", "rollup"]
+  "exclude": ["tests", "rollup", "src/event-emitter.ts", "src/get-receive-handler.ts", "src/handlers-event-emitter.ts"]
 }

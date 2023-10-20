@@ -1,7 +1,9 @@
+import { ErrorMessage } from '@anyit/messaging';
+import 'reflect-metadata';
 import { MessageHandlers } from '../message-handlers';
 import { getReceiveHandler } from '../get-receive-handler';
 
-export const Receive = (
+export const ReceiveError = (
   target: any,
   propertyKey: string | symbol,
   parameterIndex: number,
@@ -12,23 +14,23 @@ export const Receive = (
     propertyKey,
   )[parameterIndex];
 
-  const method = propertyKey as string;
-
   const className = target.constructor.name;
 
   MessageHandlers.setHandler(target.constructor, {
     class: {
       name: className,
-      method,
+      method: propertyKey as string,
     },
     message: {
-      code: messageType.code,
-      name: messageType.name,
+      code: ErrorMessage.code,
+      name: ErrorMessage.name,
     },
+
     handleFunction: getReceiveHandler(
       target,
       propertyKey,
       parameterIndex,
+      ErrorMessage,
       messageType,
     ),
   } as const);

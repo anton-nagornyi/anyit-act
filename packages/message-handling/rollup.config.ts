@@ -9,7 +9,7 @@ export default [
 			format: 'cjs',
 			sourcemap: true,
 		},
-		external: ['reflect-metadata'],
+		external: ['reflect-metadata', '@anyit/messaging'],
 		plugins: [
 			typescript({
 				tsconfig: 'tsconfig.build.json'
