@@ -27,28 +27,28 @@ export class ActorSystem {
     askTimeout: 100000,
   };
 
-  static resolve<T extends Actor = Actor>(address: string): ActorRef<T> | null {
+  static resolve(address: string): ActorRef | null {
     const env = this.getEnvironment(address);
     const envAddress = env.resolver.getNewAddress(address);
 
-    const actor = env.resolver.resolve<T>(envAddress);
+    const actor = env.resolver.resolve(envAddress);
     if (!actor) {
       return null;
     }
-    return new ActorRef<T>(envAddress, env.transmitter);
+    return new ActorRef(envAddress, env.transmitter);
   }
 
-  static getRef<T extends Actor = Actor>(address: string): ActorRef<T> {
+  static getRef(address: string): ActorRef {
     const env = this.getEnvironment(address);
     const envAddress = env.resolver.getNewAddress(address);
 
-    return new ActorRef<T>(envAddress, env.transmitter);
+    return new ActorRef(envAddress, env.transmitter);
   }
 
   static create<T extends typeof Actor = typeof Actor>(
     actor: T,
     ...args: IsActorArgs<Args<T>> extends true ? [Args<T>?] : [ResultArgs<T>]
-  ): ActorRef<InstanceType<T>> {
+  ): ActorRef {
     const [firstArg] = args;
 
     const { address: inputAddress, ...restArgs } =
@@ -69,7 +69,7 @@ export class ActorSystem {
 
     env.resolver.register(newActor);
 
-    const ref = new ActorRef<InstanceType<T>>(address, env.transmitter);
+    const ref = new ActorRef(address, env.transmitter);
 
     newActor.start(ref);
 

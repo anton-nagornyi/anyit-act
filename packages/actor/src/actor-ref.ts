@@ -2,38 +2,21 @@ import { MessageTransmitter } from './environment/message-transmitter';
 import { Actor } from './actor';
 import { Message } from '@anyit/messaging';
 
-type ArgumentUnion<T> = {
-  [K in keyof T]: T[K] extends (...args: infer A) => any
-    ? K extends 'tell'
-      ? never
-      : A[number]
-    : never;
-}[keyof T];
+type AskReturn<T extends Message> = Promise<
+  Omit<Awaited<ReturnType<Actor['ask']>>, 'reason'> & { reason: T }
+>;
 
-type IsSubType<Base, T extends Base> = T extends Base
-  ? Base extends T
-    ? false
-    : true
-  : false;
-
-type IsDerivedFromActor<T extends Actor> = IsSubType<Actor, T>;
-
-export type AllowedMessages<T extends Actor> =
-  IsDerivedFromActor<Actor> extends true
-    ? Exclude<ArgumentUnion<T>, 'Message' | undefined>
-    : Message;
-
-export class ActorRef<T extends Actor = Actor> {
+export class ActorRef {
   constructor(
     readonly address: string,
     private readonly transmitter: MessageTransmitter,
   ) {}
 
-  tell(message: AllowedMessages<T>) {
+  tell<TMessage extends Message>(message: TMessage) {
     return this.transmitter.send(this.address, message);
   }
 
-  ask(message: AllowedMessages<T>): ReturnType<Actor['ask']> {
+  ask<TMessage extends Message>(message: TMessage): AskReturn<TMessage> {
     return this.transmitter.request(this.address, message);
   }
 }
