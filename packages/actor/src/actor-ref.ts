@@ -32,4 +32,8 @@ export class ActorRef<T extends Actor = Actor> {
   tell(message: AllowedMessages<T>) {
     return this.transmitter.send(this.address, message);
   }
+
+  ask(message: AllowedMessages<T>) {
+    return this.transmitter.request(this.address, message);
+  }
 }

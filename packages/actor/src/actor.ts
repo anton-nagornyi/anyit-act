@@ -1,15 +1,13 @@
-import {
-  ErrorMessage,
-  isErrorMessage,
-  isSuccessMessage,
-  Message,
-} from '@anyit/messaging';
+import { ErrorMessage, Message, SuccessMessage } from '@anyit/messaging';
 import { Subscribe } from './messages/subscribe';
 import { MessageHandlers, Receive } from '@anyit/message-handling';
 import { ActorRef } from './actor-ref';
+import { AskTimeoutError } from './errors/ask-timeout-error';
+import { AskNoHandlerError } from './errors/ask-no-handler-error';
 
 export type ActorArgs = {
   address: string;
+  askTimeout?: number;
 };
 
 export type ActorType<T extends Actor = Actor> = new (args: ActorArgs) => T;
@@ -19,6 +17,7 @@ const EmitMetadata = (_: any, __: string | symbol, ___: number) => {};
 export class Actor {
   constructor(args: ActorArgs) {
     this.address = args.address;
+    this.askTimeout = args.askTimeout ?? 10000;
 
     if (!Actor.subscriptionSet.has(this.constructor)) {
       Receive(this, 'subscribe', 0);
@@ -29,6 +28,8 @@ export class Actor {
   private static subscriptionSet = new Set();
 
   readonly address: string;
+
+  readonly askTimeout: number;
 
   private readonly inbox = new Array<Message>();
 
@@ -53,25 +54,27 @@ export class Actor {
     if (handlers) {
       for (const handler of handlers) {
         try {
-          const result = await handler.handleFunction.call(this, message);
-          if (isSuccessMessage(result) || isErrorMessage(result)) {
-            this.emitToListeners(result);
-          }
+          await handler.handleFunction.call(this, message);
         } catch (e: any) {
           handled = false;
-          this.emitToListeners(
-            new ErrorMessage({
-              reason: message,
-              error: e,
-            }),
-          );
-          break;
+
+          const errorMessage = new ErrorMessage({
+            reason: message,
+            error: e,
+          });
+
+          this.emitToListeners(errorMessage);
+          return errorMessage;
         }
       }
     }
 
     if (handled) {
-      this.emitToListeners(message);
+      const success = new SuccessMessage({
+        reason: message,
+      });
+      this.emitToListeners(success);
+      return success;
     }
   }
 
@@ -99,6 +102,33 @@ export class Actor {
     this.inbox.push(message);
 
     this.process();
+  };
+
+  ask = async (message: Message) => {
+    const handlers = MessageHandlers.getHandlers(
+      this.constructor,
+      message.code,
+    );
+
+    if (!handlers || handlers.length === 0) {
+      throw new AskNoHandlerError(message);
+    }
+
+    return new Promise(async (resolve, reject) => {
+      const timeout = setTimeout(() => {
+        reject(new AskTimeoutError(message, this.askTimeout));
+      }, this.askTimeout);
+
+      try {
+        const result = await this.handleMessage(message);
+
+        clearTimeout(timeout);
+
+        resolve(result);
+      } catch (e) {
+        reject(e);
+      }
+    });
   };
 
   private process() {

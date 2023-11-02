@@ -3,25 +3,29 @@ import type { Actor, ActorArgs } from './actor';
 import { EnvironmentManager } from './environment/environment-manager';
 import { LocalEnvironment } from './environment/local-environment';
 
-type IsActorArgs<T extends ActorArgs> = keyof T extends 'address'
-  ? T['address'] extends string
-    ? keyof T extends keyof ActorArgs
-      ? true
-      : false
+type HasFields<T> = T extends ActorArgs
+  ? keyof T extends keyof ActorArgs
+    ? true
     : false
   : false;
+
+type IsActorArgs<T extends ActorArgs> = HasFields<T>;
 
 type Args<T extends typeof Actor> = ConstructorParameters<T>[0];
 
 type ResultArgs<T extends typeof Actor> = Omit<
   ConstructorParameters<T>[0],
   'address'
-> & { address?: string };
+> & { address?: string; askTimeout?: number };
 
 export class ActorSystem {
   private static localEnvironment = new LocalEnvironment();
 
   private static envManager = new EnvironmentManager([this.localEnvironment]);
+
+  static settings = {
+    askTimeout: 100000,
+  };
 
   static resolve<T extends Actor = Actor>(address: string): ActorRef<T> | null {
     const env = this.getEnvironment(address);
@@ -43,7 +47,7 @@ export class ActorSystem {
 
   static create<T extends typeof Actor = typeof Actor>(
     actor: T,
-    ...args: IsActorArgs<Args<T>> extends true ? [{}?] : [ResultArgs<T>]
+    ...args: IsActorArgs<Args<T>> extends true ? [Args<T>?] : [ResultArgs<T>]
   ): ActorRef<InstanceType<T>> {
     const [firstArg] = args;
 
@@ -57,7 +61,11 @@ export class ActorSystem {
 
     const address = env.resolver.getNewAddress(inputAddress);
 
-    const newActor = new actor({ address, ...restArgs });
+    const newActor = new actor({
+      address,
+      askTimeout: this.settings.askTimeout,
+      ...restArgs,
+    });
 
     env.resolver.register(newActor);
 

@@ -8,6 +8,7 @@ describe('ActorRef', () => {
   beforeEach(() => {
     transmitter = {
       send: jest.fn(),
+      request: jest.fn(),
     } as unknown as MessageTransmitter;
     actorRef = new ActorRef('some-address', transmitter);
   });
@@ -19,6 +20,19 @@ describe('ActorRef', () => {
       actorRef.tell(mockMessage as any);
 
       expect(transmitter.send).toHaveBeenCalledWith(
+        'some-address',
+        mockMessage,
+      );
+    });
+  });
+
+  describe('ask', () => {
+    it('Then it should request result after sending a message using the transmitter', () => {
+      const mockMessage = { type: 'some-type' };
+
+      actorRef.ask(mockMessage as any);
+
+      expect(transmitter.request).toHaveBeenCalledWith(
         'some-address',
         mockMessage,
       );
