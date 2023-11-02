@@ -1,4 +1,9 @@
-import { ErrorMessage, Message, SuccessMessage } from '@anyit/messaging';
+import {
+  ErrorMessage,
+  isErrorMessage,
+  Message,
+  SuccessMessage,
+} from '@anyit/messaging';
 import { Subscribe } from './messages/subscribe';
 import { MessageHandlers, Receive } from '@anyit/message-handling';
 import { ActorRef } from './actor-ref';
@@ -104,7 +109,13 @@ export class Actor {
     this.process();
   };
 
-  ask = async (message: Message) => {
+  ask = async <T extends Message>(
+    message: T,
+  ): Promise<{
+    response: SuccessMessage | ErrorMessage;
+    reason: T;
+    error?: Error;
+  }> => {
     const handlers = MessageHandlers.getHandlers(
       this.constructor,
       message.code,
@@ -120,11 +131,15 @@ export class Actor {
       }, this.askTimeout);
 
       try {
-        const result = await this.handleMessage(message);
+        const response = (await this.handleMessage(message))!;
 
         clearTimeout(timeout);
 
-        resolve(result);
+        resolve({
+          response,
+          reason: response.reason! as T,
+          error: isErrorMessage(response) ? response.error : undefined,
+        });
       } catch (e) {
         reject(e);
       }

@@ -38,7 +38,7 @@ Abstract class responsible for sending messages to actors.
 
 Reference to an actor which allows sending messages.
 
-- **Methods**: `tell`
+- **Methods**: `tell`, `ask`
 
 ### ActorSystem
 
@@ -88,6 +88,15 @@ actor.subscribe(new Subscribe({ listener: anotherActorRef, messageTypes: [SomeMe
 ```typescript
 actorRef.tell(new MyMessage('Hello, World!'));
 ```
+
+3. **Asking a message from an actor**:
+```typescript
+const {response, reason, error} = actorRef.ask(new MyMessage('Hello, World!'));
+// response is SuccessMessage or ErrorMessage
+// reason is MyMessage
+// error is Error if actor responded with ErrorMessage
+```
+
 4. **Resolve an actor by address**:
 ```typescript
 const resolvedActorRef = ActorSystem.resolve('some-actor-address');

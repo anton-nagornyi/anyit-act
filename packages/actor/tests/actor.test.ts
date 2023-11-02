@@ -100,7 +100,10 @@ describe('Actor', () => {
       const mockMessage = new TestMessage();
 
       await expect(ref.ask(mockMessage)).resolves.toMatchObject({
-        code: SuccessMessage.code,
+        response: expect.objectContaining({
+          code: SuccessMessage.code,
+          reason: mockMessage,
+        }),
         reason: mockMessage,
       });
     });
