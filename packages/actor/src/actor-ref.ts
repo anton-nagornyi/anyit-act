@@ -33,7 +33,7 @@ export class ActorRef<T extends Actor = Actor> {
     return this.transmitter.send(this.address, message);
   }
 
-  ask(message: AllowedMessages<T>) {
+  ask(message: AllowedMessages<T>): ReturnType<Actor['ask']> {
     return this.transmitter.request(this.address, message);
   }
 }
