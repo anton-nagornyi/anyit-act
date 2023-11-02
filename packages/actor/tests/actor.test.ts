@@ -74,7 +74,7 @@ describe('Actor', () => {
 
       ref.tell(subscribeMessage);
 
-      await new Promise((resolve) => setTimeout(resolve));
+      await new Promise((resolve) => setTimeout(resolve, 1));
       const listeners = (actor as any).listeners.get(
         '01HBN0K9K9A2HEB918MY0JA85Q',
       );
