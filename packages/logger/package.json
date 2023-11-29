@@ -1,7 +1,7 @@
 {
   "name": "@anyit/logger",
   "author": "Anton Nagornyi",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/anton-nagornyi/anyit-act#readme",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -14,7 +14,6 @@
     "bump-version": "yarn version --patch --no-git-tag-version"
   },
   "dependencies": {
-    "@anyit/actor": "workspace:*",
     "@anyit/log-actor": "workspace:*",
     "@anyit/logger-interface": "workspace:*"
   },

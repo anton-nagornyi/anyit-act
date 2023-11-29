@@ -1,10 +1,12 @@
 import * as winston from 'winston';
 import { Actor, ActorArgs } from '@anyit/actor';
 import { LogMessage, SetLogLevel } from '@anyit/log-actor';
+import { LogLevel } from '@anyit/logger-interface';
 import { WinstonLogger } from './winston-logger';
 import { Receive } from '@anyit/message-handling';
 
 export type LogWinstonActorArgs = ActorArgs & {
+  level?: LogLevel;
   winston?: winston.LoggerOptions;
 };
 
@@ -12,6 +14,14 @@ export class LogWinstonActor extends Actor {
   constructor(args: LogWinstonActorArgs) {
     super(args);
     this.logger = WinstonLogger(args.winston);
+
+    if (args.level) {
+      this.setLogLevel(
+        new SetLogLevel({
+          logLevel: args.level,
+        }),
+      );
+    }
   }
 
   private readonly logger: winston.Logger;

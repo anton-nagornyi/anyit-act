@@ -4,7 +4,7 @@ import { StaticLoggerInterface, LogLevel } from '@anyit/logger-interface';
 
 @StaticLoggerInterface
 export class Log {
-  private static actor?: ActorRef<LogActor>;
+  private static actor?: ActorRef;
 
   static readonly LOGGER_ADDRESS = 'logger-01HAVBM8KV02XWY2GJ9ANKH9B3';
 
@@ -86,7 +86,7 @@ export class Log {
   private static getLogger() {
     if (!this.actor) {
       this.actor =
-        ActorSystem.resolve<LogActor>(this.LOGGER_ADDRESS) ??
+        ActorSystem.resolve(this.LOGGER_ADDRESS) ??
         ActorSystem.create(LogActor, {
           logLevel: this.logLevel,
           address: this.LOGGER_ADDRESS,
