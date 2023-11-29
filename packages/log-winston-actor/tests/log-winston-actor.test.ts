@@ -8,7 +8,9 @@ jest.mock('../src/winston-logger');
 
 describe('Given a LogWinstonActor class', () => {
   let mockWinstonLogger: jest.Mocked<winston.Logger>;
-  let actor: ActorRef<LogWinstonActor>;
+  let actor: ActorRef;
+
+  const wait = () => new Promise((resolve) => setTimeout(resolve));
 
   beforeEach(() => {
     mockWinstonLogger = {
@@ -25,8 +27,9 @@ describe('Given a LogWinstonActor class', () => {
   });
 
   describe('When setting the log level', () => {
-    it('Then it should update the logger level', () => {
+    it('Then it should update the logger level', async () => {
       actor.tell(new SetLogLevel({ logLevel: 'error' }));
+      await wait();
       expect(mockWinstonLogger.level).toEqual('error');
       expect(mockWinstonLogger.silent).toEqual(true);
     });
@@ -38,23 +41,26 @@ describe('Given a LogWinstonActor class', () => {
   });
 
   describe('When logging a message', () => {
-    it('Then it should log the message with the correct level and meta', () => {
+    it('Then it should log the message with the correct level and meta', async () => {
       const message = 'Test message';
       const meta = { some: 'meta' };
 
       actor.tell(new LogMessage({ message, meta: [meta], level: 'debug' }));
+      await wait();
       expect(mockWinstonLogger.log).toBeCalledWith('debug', message, meta);
     });
 
-    it('Then it should handle "fatal" level as "error"', () => {
+    it('Then it should handle "fatal" level as "error"', async () => {
       const message = 'Fatal error occurred';
       actor.tell(new LogMessage({ message, level: 'fatal' }));
+      await wait();
       expect(mockWinstonLogger.log).toBeCalledWith('error', message);
     });
 
-    it('Then it should handle non-string message correctly', () => {
+    it('Then it should handle non-string message correctly', async () => {
       const messageObj = { msg: 'Object Message' };
       actor.tell(new LogMessage({ message: messageObj, level: 'info' }));
+      await wait();
       expect(mockWinstonLogger.log).toBeCalledWith('info', '', messageObj);
     });
   });
@@ -68,7 +74,7 @@ describe('Given a LogWinstonActor class', () => {
 
       // eslint-disable-next-line no-new
       new LogWinstonActor({ winston: options, address: 'address' });
-      expect(WinstonLogger).toHaveBeenCalledWith(options);
+      expect(WinstonLogger).toBeCalledWith(options);
     });
   });
 });

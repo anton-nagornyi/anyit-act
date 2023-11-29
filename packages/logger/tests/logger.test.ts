@@ -1,14 +1,13 @@
 import { ActorRef, ActorSystem } from '@anyit/actor';
-import { LogActor } from '@anyit/log-actor';
 import { Log } from '../src/log';
 import { LogLevel } from '@anyit/logger-interface';
 
 describe('Given a Log class', () => {
-  let mockActor: ActorRef<LogActor>;
+  let mockActor: ActorRef;
   let mockTell: jest.Mock;
 
   beforeAll(() => {
-    mockActor = {} as ActorRef<LogActor>;
+    mockActor = {} as ActorRef;
     mockTell = jest.fn();
     mockActor.tell = mockTell;
 
