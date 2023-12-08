@@ -1,7 +1,7 @@
 {
   "name": "@anyit/actor",
   "author": "Anton Nagornyi",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "homepage": "https://github.com/anton-nagornyi/anyit-act#readme",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -12,11 +12,6 @@
     "lint": "eslint \"{src,tests}/**/*.ts\"",
     "lint:fix": "eslint \"{src,tests}/**/*.ts\" --fix",
     "bump-version": "yarn version --patch --no-git-tag-version"
-  },
-  "dependencies": {
-    "@anyit/message-handling": "workspace:*",
-    "@anyit/messaging": "workspace:*",
-    "reflect-metadata": "^0.1.13"
   },
   "peerDependencies": {
     "@anyit/message-handling": "*",
