@@ -36,19 +36,19 @@ describe('ActorLocalResolver', () => {
   describe('getNewAddress', () => {
     it('Then it should return a new address with incremented id if no address is provided', () => {
       const address1 = resolver.getNewAddress();
-      expect(address1).toBe('local:1');
+      expect(address1).toBe('local://1');
 
       const address2 = resolver.getNewAddress();
-      expect(address2).toBe('local:2');
+      expect(address2).toBe('local://2');
     });
 
     it('Then it should prepend "local:" to an address if it does not start with "local"', () => {
       const address = resolver.getNewAddress('testAddress');
-      expect(address).toBe('local:testAddress');
+      expect(address).toBe('local://testAddress');
     });
 
     it('Then it should return the same address if it already starts with "local"', () => {
-      const originalAddress = 'local:original';
+      const originalAddress = 'local://original';
       const address = resolver.getNewAddress(originalAddress);
       expect(address).toBe(originalAddress);
     });

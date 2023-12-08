@@ -1,11 +1,14 @@
 import { Environment } from './environment';
+import { LocalEnvironment } from './local-environment';
 
 export class EnvironmentManager {
-  constructor(private readonly environments: Environment[]) {}
+  constructor(private readonly environments: Environment[] = []) {}
+
+  private localEnvironment = new LocalEnvironment();
 
   getEnvironmentByAddress(address?: string | null) {
     if (!address) {
-      return null;
+      return this.localEnvironment;
     }
 
     const [name] = address.split(':');
@@ -18,6 +21,6 @@ export class EnvironmentManager {
         return env;
       }
     }
-    return null;
+    return this.localEnvironment;
   }
 }

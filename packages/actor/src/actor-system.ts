@@ -1,7 +1,6 @@
 import { ActorRef } from './actor-ref';
 import type { Actor, ActorArgs } from './actor';
 import { EnvironmentManager } from './environment/environment-manager';
-import { LocalEnvironment } from './environment/local-environment';
 
 type HasFields<T> = T extends ActorArgs
   ? keyof T extends keyof ActorArgs
@@ -18,14 +17,20 @@ type ResultArgs<T extends typeof Actor> = Omit<
   'address'
 > & { address?: string; askTimeout?: number };
 
+export type ActorSystemSettings = {
+  askTimeout: number;
+  manager: EnvironmentManager;
+};
+
 export class ActorSystem {
-  private static localEnvironment = new LocalEnvironment();
-
-  private static envManager = new EnvironmentManager([this.localEnvironment]);
-
-  static settings = {
+  private static settings: ActorSystemSettings = {
     askTimeout: 100000,
+    manager: new EnvironmentManager(),
   };
+
+  static set(settings: Partial<ActorSystemSettings>) {
+    this.settings = { ...this.settings, ...settings };
+  }
 
   static resolve(address: string): ActorRef | null {
     const env = this.getEnvironment(address);
@@ -77,8 +82,6 @@ export class ActorSystem {
   }
 
   private static getEnvironment(address?: string) {
-    return (
-      this.envManager.getEnvironmentByAddress(address) ?? this.localEnvironment
-    );
+    return this.settings.manager.getEnvironmentByAddress(address);
   }
 }

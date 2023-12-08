@@ -6,6 +6,8 @@ export class ActorLocalResolver extends ActorResolver {
 
   private actors = new Map<string, Actor>();
 
+  private readonly envId = 'local://';
+
   register(actor: Actor) {
     this.actors.set(actor.address, actor);
   }
@@ -16,11 +18,11 @@ export class ActorLocalResolver extends ActorResolver {
 
   getNewAddress(address?: string): string {
     if (!address) {
-      return `local:${++this.id}`;
+      return `${this.envId}${++this.id}`;
     }
 
-    if (!address.startsWith('local')) {
-      return `local:${address}`;
+    if (!address.startsWith(this.envId)) {
+      return `${this.envId}${address}`;
     }
 
     return address;
