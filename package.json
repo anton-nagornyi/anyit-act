@@ -17,6 +17,8 @@
   "homepage": "https://github.com/anton-nagornyi/anyit-act#readme",
   "packageManager": "yarn@3.6.3",
   "dependencies": {
+    "@anyit/message-handling": "workspace:*",
+    "@anyit/messaging": "workspace:*",
     "winston": "latest"
   }
 }
