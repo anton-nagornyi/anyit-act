@@ -32,7 +32,8 @@ export type MessageArgs<T extends Message = Message> = Omit<
   | 'getDateTimeFromIsoArray'
   | 'getMessageType'
   | 'getMessageTypes'
-> & { messageId?: string };
+  | 'createdAt'
+> & { messageId?: string; createdAt?: DateTime };
 
 export abstract class Message {
   constructor(args?: MessageArgs) {
@@ -47,6 +48,8 @@ export abstract class Message {
     this.createdAt = this.getDateTimeFromIso(args?.createdAt);
 
     this.reasonId = args?.reasonId;
+
+    this.sender = args?.sender;
 
     if (args?.reason instanceof Message) {
       this.reason = args.reason;
@@ -90,11 +93,13 @@ export abstract class Message {
 
   readonly traceId?: string;
 
-  readonly createdAt?: DateTime;
+  readonly createdAt: DateTime;
 
   readonly reason?: Message;
 
   readonly reasonId?: string;
+
+  readonly sender?: string;
 
   get type() {
     return this.constructor.name;

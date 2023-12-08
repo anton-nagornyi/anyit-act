@@ -29,6 +29,7 @@ The `Message` class is an abstract class designed to act as the base for all cus
 - `reason`: An optional reason message.
 - `reasonId`: An optional reason message ID if for some reason providing of the whole message within the `reason` field
 is unwanted.
+- `sender`: An optional sender field to identify who is sending this message
 - `type`: Returns the constructor's name.
 - `code`: Returns the code associated with the message.
 
