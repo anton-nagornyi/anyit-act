@@ -33,7 +33,7 @@ export type MessageArgs<T extends Message = Message> = Omit<
   | 'getMessageType'
   | 'getMessageTypes'
   | 'createdAt'
-> & { messageId?: string; createdAt?: DateTime };
+> & { messageId?: string; createdAt?: DateTime | string };
 
 export abstract class Message {
   constructor(args?: MessageArgs) {
