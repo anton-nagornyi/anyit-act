@@ -66,6 +66,7 @@ export class Actor {
           const errorMessage = new ErrorMessage({
             reason: message,
             error: e,
+            sender: this.constructor.name,
           });
 
           this.emitToListeners(errorMessage);
@@ -77,6 +78,7 @@ export class Actor {
     if (handled) {
       const success = new SuccessMessage({
         reason: message,
+        sender: this.constructor.name,
       });
       this.emitToListeners(success);
       return success;
