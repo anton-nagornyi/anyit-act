@@ -3,11 +3,12 @@ import { MessageType } from '../messages/message';
 import { CODE } from '../symbols/internal-symbols';
 
 export const RegisterMessage =
-  (uniqueCode: string) =>
+  (uniqueCode?: string) =>
   <T extends MessageType>(target: T) => {
-    MessageFactory.register(uniqueCode, target);
+    const code = uniqueCode ?? target.name;
+    MessageFactory.register(code, target);
 
-    (target as any)[CODE] = uniqueCode;
+    (target as any)[CODE] = code;
 
     return target as T;
   };

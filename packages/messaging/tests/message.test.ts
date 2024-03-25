@@ -10,8 +10,17 @@ DateTime.utc = () => now;
 @RegisterMessage('01H7QJ0CDTC49J6J62JZPHPJKE')
 class TestMessage extends Message {}
 
+@RegisterMessage()
+class TestMessageWithoutCode extends Message {}
+
 describe('Given the Message class', () => {
   let message: TestMessage;
+
+  describe('When initializing a new TestMessageWithoutCode', () => {
+    it('Then its code is equal to the constructor name', () => {
+      expect(TestMessageWithoutCode.code).toBe('TestMessageWithoutCode');
+    });
+  });
 
   describe('When initializing a new TestMessage', () => {
     describe('And no arguments are provided', () => {

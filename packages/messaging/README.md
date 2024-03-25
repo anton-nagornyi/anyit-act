@@ -89,12 +89,13 @@ if (isProcessingComplete(someMessage)) {
 
 ## Decorators
 
-### `RegisterMessage(uniqueCode: string)`
+### `RegisterMessage(uniqueCode?: string)`
 
 A decorator that registers a message type with a unique code.
 
 **Parameters**:
-- `uniqueCode`: A string that acts as a unique identifier for the message type.
+- `uniqueCode`: A string that acts as a unique identifier for the message type. If it is omitted then code wil be equal 
+to the constructor name of a message class.
 
 ## Messages Factory
 
